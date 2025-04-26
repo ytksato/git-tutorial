@@ -277,3 +277,37 @@ $ git checkout feature
 # ブランチを新規作成して切り替える
 $ git checkout -b feature
 ```
+
+# コンフリクトを起こしてみよう
+```bash
+$ git merge feature
+Auto-merging feature-test.md
+CONFLICT (content): Merge conflict in feature-test.md
+Automatic merge failed; fix conflicts and then commit the result.
+
+$ git status
+On branch main
+Your branch is ahead of 'origin/main' by 6 commits.
+  (use "git push" to publish your local commits)
+
+You have unmerged paths.
+  (fix conflicts and run "git commit")
+  (use "git merge --abort" to abort the merge)
+
+Unmerged paths:
+  (use "git add <file>..." to mark resolution)
+        both modified:   feature-test.md
+
+no changes added to commit (use "git add" and/or "git commit -a")
+```
+
+### コンフリクトを起こしたファイルを確認して中身をきれいにする
+```
+# feature-branch
+## git merge test
+<<<<<<< HEAD
+## コンフリクトテスト
+=======
+## feature-conflict-test
+>>>>>>> feature
+```
