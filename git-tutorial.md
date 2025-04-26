@@ -147,3 +147,133 @@ Merge made by the 'ort' strategy.
  1 file changed, 1 insertion(+)
  create mode 100644 fetch-test.md
 ```
+
+## リモートから取得しよう（pull）
+```bash
+# fetchとmergeを同時に行うのと同義ではあるが注意が必要
+$ git pull origin main
+
+# リモートリポジトリで作成したpull-test.mdがローカルに反映された
+$ ls -al
+total 48
+drwxr-xr-x   9 ytk  staff   288  4 26 18:09 .
+drwxr-xr-x@ 40 ytk  staff  1280  4 25 13:31 ..
+-rw-r--r--   1 ytk  staff   109  4 25 13:41 .cursorindexingignore
+drwxr-xr-x  14 ytk  staff   448  4 26 18:09 .git
+-rw-r--r--   1 ytk  staff    11  4 25 15:22 .gitignore
+drwxr-xr-x   4 ytk  staff   128  4 25 13:41 .specstory
+-rw-r--r--   1 ytk  staff     5  4 26 17:57 fetch-test.md
+-rw-r--r--   1 ytk  staff  5321  4 26 17:58 git-tutorial.md
+-rw-r--r--   1 ytk  staff    10  4 26 18:09 pull-test.md
+```
+
+## fetchとpullを使い分けよう
+
+1. **`git pull` の内部動作**:
+- `git pull` は実際には `git fetch` + `git merge` の組み合わせです
+- つまり：
+  ```bash
+  git pull origin hoge
+  ```
+  は以下と同じ動作をします：
+  ```bash
+  git fetch origin hoge  # リモートの情報を取得
+  git merge origin/hoge  # 現在のブランチにマージ
+  ```
+
+2. **誤解が生じやすい理由**:
+- `git pull hoge` というコマンドを打つとき、多くの人は「`hoge`ブランチを最新にする」と考えます
+- しかし実際の動作は「現在いるブランチに`hoge`の内容をマージする」です
+- この認識の違いが事故（意図しないマージ）を引き起こす原因になります
+
+3. **`git fetch` + `git merge` の利点**:
+- 2つのステップに分けることで、各操作の意図が明確になります
+- `git fetch` で安全にリモートの情報を取得
+- `git merge` で明示的にマージ操作を行う
+- マージする前に変更内容を確認できる（`git diff HEAD origin/hoge`など）
+
+4. **安全な運用のために**:
+- 特に Git に慣れていない段階では、`git pull` の代わりに `git fetch` と `git merge` を個別に実行する方が安全です
+- これにより意図しないマージを防ぎ、各操作の意味をより理解しやすくなります
+
+## リモートの情報を詳しく知ろう
+```bash
+$ git remote show origin
+* remote origin
+  Fetch URL: https://github.com/ytksato/git-tutorial.git
+  Push  URL: https://github.com/ytksato/git-tutorial.git
+  HEAD branch: main
+  Remote branch:
+    main tracked
+  Local ref configured for 'git push':
+    main pushes to main (fast-forwardable)
+```
+
+## リモートを変更・削除しよう
+```bash
+# リモートを確認
+$ git remote
+bak
+origin
+
+# リモートの名前を変更
+$ git remote rename bak backup
+Renaming remote references: 100% (1/1), done.
+
+# 変更を確認
+$ git remote                  
+backup
+origin
+
+# リモートを削除
+$ git remote rm backup
+
+# 削除されていることを確認
+$ git remote          
+origin
+```
+
+## 新しいブランチを作成しよう
+```bash
+$ git branch feature
+
+# 新しいブランチを確認
+$ git branch
+* main
+  feature
+
+# 全てのブランチを確認（リモートのブランチも含む）
+$ git branch -a
+* main
+  remotes/origin/main
+```
+
+```bash
+# ブランチの履歴を確認
+$ git log --oneline --decorate
+3abb0f1 (HEAD -> main, feature) Merge branch 'main' of https://github.com/ytksato/git-tutorial
+e842553 (origin/main) Create pull-test.md
+4380951 リモートから取得しよう（fetch）を追加
+ee9e85c Merge remote-tracking branch 'origin/main'
+b3c9774 Create fetch-test.md
+2ad294d ファイル名を変更
+9963c18 git commit --amendの注意点を追記
+6993162 git commit --amendを追記
+142a253 index.htmlにgit restoreとgit resetコマンドの詳細な説明を追加し、ワークツリーのファイルを元に戻す手順を明確化しました。
+e01a4b3 index.htmlにgit restoreとgit resetコマンドの説明を追加
+146fe33 .specstoryディレクトリを.gitignoreに追加し、不要な履歴ファイルを削除しました。
+1fd59f3 git mvコマンドの意義についての詳細を追加し、リネーム操作の利点や履歴追跡の容易さを説明しました。
+bd955eb index.htmlの削除を取り消し、復元手順を記録した内容を追加
+eb5ea9a index.htmlにgit diffコマンドを追記
+579828a git statusコマンドを追記
+eca8e39 index.htmlファイルを新規作成し、"git tutorial"という見出しを追加しました。
+e2167cc first commit
+```
+
+## ブランチを切り替えよう
+```bash
+$ git checkout feature
+
+# ブランチを新規作成して切り替える
+$ git checkout -b feature
+```
