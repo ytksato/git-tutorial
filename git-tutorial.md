@@ -367,7 +367,7 @@ git status
 ## ブランチを変更・削除する
 ### ブランチ名を変更する
 ```bash
-$ git branch -m feature feature-branch
+$ git branch -m new-feature
 ```
 
 ### ブランチを削除する
