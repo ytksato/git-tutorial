@@ -363,3 +363,15 @@ git status
 - プルリクエストを必須にする
 - コードレビューを必ず実施
 - CI/CDでの自動テストを通過させる
+
+## ブランチを変更・削除する
+### ブランチ名を変更する
+```bash
+$ git branch -m feature feature-branch
+```
+
+### ブランチを削除する
+```bash
+$ git branch -d feature-branch
+Deleted branch feature-branch (was 3abb0f1).
+```
