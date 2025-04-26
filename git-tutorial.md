@@ -107,7 +107,7 @@ $ git branch -a
 
 ### ローカルのブランチをリモートのブランチに反映
 ```bash
-$ git checkout remotes/origin/main
+$ git switch remotes/origin/main
 M       git-tutorial.md
 Note: switching to 'remotes/origin/main'.
 
@@ -272,10 +272,10 @@ e2167cc first commit
 
 ## ブランチを切り替えよう
 ```bash
-$ git checkout feature
+$ git switch feature
 
 # ブランチを新規作成して切り替える
-$ git checkout -b feature
+$ git switch -c feature
 ```
 
 # コンフリクトを起こしてみよう
@@ -372,6 +372,40 @@ $ git branch -m new-feature
 
 ### ブランチを削除する
 ```bash
-$ git branch -d feature-branch
-Deleted branch feature-branch (was 3abb0f1).
+$ git branch -d new-feature
+Deleted branch new-feature (was 511f7f1).
 ```
+`git switch`の使用をお勧めします。理由は以下の通りです：
+
+1. **`git switch`の利点**:
+- より直感的で目的が明確
+- ブランチの切り替えに特化したコマンド
+- Git 2.23以降で導入された新しいコマンド
+- より安全な設計（ブランチ操作に限定）
+
+基本的な使い方：
+```bash
+# ブランチの切り替え
+git switch main
+
+# 新しいブランチを作成して切り替え
+git switch -c new-feature
+```
+
+2. **`git checkout`の特徴**:
+- 多機能すぎて混乱しやすい
+- ブランチの切り替え以外にも様々な機能がある：
+  - ファイルの復元
+  - 特定のコミットへの移動
+  - ブランチの作成
+- 古いコマンドで、歴史的な理由で多機能になっている
+
+3. **なぜ`switch`が推奨されるのか**:
+- 機能が明確で分かりやすい
+- ミスを防ぎやすい
+- モダンなGitの使用方法に沿っている
+- コマンドの意図が明確（"切り替える"という動作）
+
+結論：
+- 新しいプロジェクトでは`git switch`を使うことをお勧めします
+- `checkout`は必要な場合（ファイルの復元など）に限定して使用するのがベストプラクティスです
