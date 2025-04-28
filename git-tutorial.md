@@ -1,4 +1,219 @@
 # git tutorial
+
+## gitの初期設定
+```bash
+# ユーザー名を設定
+git config --global user.name "Your Name"
+
+# emailを設定
+git config --global user.email "your.email@example.com"
+
+# エディタを設定
+git config --global core.editor "vim"
+
+# それぞれを確認
+git config user.name
+git config user.email
+git config core.editor
+
+# 設定を確認
+git config --list
+cat ~/.gitconfig
+```
+
+## gitの基本的な仕組み
+### 1. Gitの基本概念
+
+1. **スナップショット方式**
+- 各コミットは、ファイルシステム全体のスナップショット
+- 変更があったファイルのみ新しく保存
+- 変更のないファイルは前のスナップショットへの参照
+
+2. **3つの作業エリア**
+```bash
+# 作業ディレクトリ（Working Directory）
+# ↓ git add
+# ステージングエリア（Staging Area）
+# ↓ git commit
+# リポジトリ（Repository）
+```
+
+### 2. オブジェクトの種類
+
+1. **blobオブジェクト**
+- ファイルの内容を保存
+- ファイル名は保存しない
+- SHA-1ハッシュで識別
+
+2. **treeオブジェクト**
+- ディレクトリ構造を表現
+- ファイル名とblobへの参照を保持
+- ディレクトリの階層構造を管理
+
+3. **commitオブジェクト**
+- コミット情報を保持
+- 親コミットへの参照
+- ルートtreeオブジェクトへの参照
+- 作者、コミッター、日時、メッセージ
+
+4. **tagオブジェクト**
+- 特定のコミットに対する参照
+- バージョン番号などの追加情報
+
+### 3. データの流れ
+
+```bash
+# 1. ファイル変更
+vim example.txt
+
+# 2. ステージングエリアに追加
+git add example.txt
+
+# 3. リポジトリにコミット
+git commit -m "Add example.txt"
+```
+
+### 4. 内部動作の例
+
+1. **ファイル保存時**
+```bash
+# ファイルの内容からblobオブジェクト作成
+# → .git/objects/に保存
+```
+
+2. **コミット時**
+```bash
+# 1. ステージング情報からtreeオブジェクト作成
+# 2. コミット情報からcommitオブジェクト作成
+# 3. HEADとブランチ参照を更新
+```
+
+### 5. 重要な概念
+
+1. **SHA-1ハッシュ**
+- 全てのオブジェクトを一意に識別
+- 内容に基づいて生成
+- 40文字の16進数
+
+2. **参照（References）**
+```bash
+# ブランチ（.git/refs/heads/）
+# タグ（.git/refs/tags/）
+# HEAD（現在のブランチ位置）
+```
+
+3. **コミットグラフ**
+- コミットは有向非循環グラフ（DAG）を形成
+- 各コミットは親コミットを参照
+- マージコミットは複数の親を持つ
+
+### 6. 基本的なファイル構造
+
+```bash
+.git/
+  ├── objects/     # Gitオブジェクトの保存
+  ├── refs/        # 参照情報
+  ├── HEAD         # 現在のブランチ
+  ├── config       # リポジトリの設定
+  └── index        # ステージング情報
+```
+
+### 7. 重要なコマンドと内部動作
+
+1. **git init**
+```bash
+# .gitディレクトリを作成
+# 基本的なGitファイル構造を初期化
+```
+
+2. **git add**
+```bash
+# 1. ファイルの内容からblobオブジェクト作成
+# 2. インデックス（ステージング）を更新
+```
+
+3. **git commit**
+```bash
+# 1. ステージング状態からtreeオブジェクト作成
+# 2. コミットオブジェクト作成
+# 3. ブランチ参照を更新
+```
+
+### 8. 分散型システムの特徴
+
+1. **完全なリポジトリコピー**
+- 各クローンは完全な履歴を持つ
+- オフライン作業が可能
+- 分散型のバックアップ
+
+2. **リモート操作**
+```bash
+# リモートからデータ取得
+git fetch origin
+
+# リモートに変更を送信
+git push origin main
+```
+
+### 9. 効率性の仕組み
+
+1. **圧縮とパッキング**
+- オブジェクトは圧縮して保存
+- 定期的にパック化して最適化
+- 重複データの効率的な管理
+
+2. **差分アルゴリズム**
+- 効率的な差分計算
+- 変更箇所のみを保存
+- ネットワーク転送の最適化
+
+### まとめ
+
+Gitの特徴：
+- コンテンツアドレス可能なファイルシステム
+- 分散型バージョン管理
+- データの整合性保証
+- 効率的なストレージ管理
+- 柔軟なワークフロー
+
+これらの仕組みにより：
+- 高速な操作
+- 信頼性の高い履歴管理
+- 効率的なチーム開発
+が実現されています。
+
+
+## ローカルリポジトリの作成
+```bash
+$ git init
+```
+
+## GitHub上にあるプロジェクトから始める
+```bash
+$ git clone https://github.com/ytksato/git-tutorial.git
+```
+## 変更をステージに追加する
+```bash
+# ファイルを指定して追加
+$ git add filename
+
+# 全てのファイルを追加
+$ git add .
+```
+
+## 変更を記録する（コミット）
+```bash
+# コミットメッセージを指定しない
+$ git commit
+
+# コミットメッセージを指定
+$ git commit -m "commit message"
+
+# 変更内容の差分を表示しながらコミット
+$ git commit -v
+```
+
+## gitの基本コマンド
 - git status
 - git diff
 
@@ -29,8 +244,7 @@
 # GitHubとやりとり
 ## リモートの情報を確認
 ```bash
-$ git remote
-origin
+$ git remote origin
 
 $ git remote -v
 origin  https://github.com/ytksato/git-tutorial.git (fetch)
