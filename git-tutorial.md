@@ -213,22 +213,70 @@ $ git commit -m "commit message"
 $ git commit -v
 ```
 
-## gitの基本コマンド
-- git status
-- git diff
+## 現在の状況を確認しよう
+```bash
+$ git status
+```
+## なにを変更したか確認しよう
+```bash
+# git add する前の変更内容
+$ git diff
+$ git diff filename
 
-## 新）ステージングした変更を取り消す
-- git restore --staged filename 
-### ワークツリーのファイルを元に戻す
-- git restore filename
+# git add した後の変更内容
+$ git diff --staged
+```
+## 変更履歴を確認しよう
+```bash
+$ git log
 
-### 旧）ステージングした変更を取り消す
-- git reset HEAD filename
-### ワークツリーのファイルを元に戻す
-- git checkout -- filename
+# 1行で表示
+$ git log --oneline
+
+# ファイルの変更差分を表示する
+$ git log -p filename
+
+# 表示するコミット数を制限する
+$ git log -n <コミット数>
+```
+
+## ファイルの削除を記録しよう
+```bash
+# ファイルを削除
+$ git rm filename
+
+# ディレクトリを削除
+$ git rm -r directoryname
+
+# ワークツリーにファイルを残したいとき
+$ git rm --cached filename
+```
+
+## ファイルの移動を記録しよう
+```bash
+$ git mv filename newfilename
+
+# 以下のコマンドと同じ
+$ mv filename newfilename
+$ git rm filename
+$ git add newfilename
+```
+
+## 変更を取り消す
+```bash
+# ワークツリーのファイルを元に戻す
+$ git restore filename
+$ git checkout -- filename(以前の書き方)
+
+# ステージングした変更を取り消す
+$ git restore --staged filename
+$ git reset HEAD filename(以前の書き方)
+```
 
 ## 直前のコミットをやり直す
-- git commit --amend
+```bash
+$ git commit --amend
+```
 ### git commit --amendでできること
 - 直前のコミットメッセージを修正できる
 - 直前のコミットに変更を追加できる
@@ -242,10 +290,47 @@ $ git commit -v
   - 必要な場合は、チームメンバーに事前に相談する
 
 # GitHubとやりとり
+## リモートリポジトリを新規追加
+```bash
+# originというショートカット名でリモートリポジトリを登録するという意味
+$ git remote add origin https://github.com/ytksato/git-tutorial.git
+```
+## リモートリポジトリにプッシュ
+```bash
+$ git push <リモート名> <ブランチ名>
+
+# 例（実際はmainにプッシュするケースはあまりない）
+$ git push origin main
+```
+
+## バージョン管理しないファイルは無視しよう
+```bash
+touch .gitignore
+```
+### .gitignoreの書き方
+- ファイル名を記載すると、そのファイルはバージョン管理されない
+- ディレクトリ名を記載すると、そのディレクトリ内のファイルはバージョン管理されない
+- ワイルドカードを使用することも可能
+- ファイル名の前に!をつけると、そのファイルはバージョン管理される
+
+### バージョン管理しないファイルの例
+```bash
+# 自動生成されるログファイル
+*.log
+
+# パスワードなどの機密情報
+.env
+
+# バージョン管理しないディレクトリ
+/tmp/
+```
+
+
 ## リモートの情報を確認
 ```bash
 $ git remote origin
 
+# リモートリポジトリのURLを確認
 $ git remote -v
 origin  https://github.com/ytksato/git-tutorial.git (fetch)
 origin  https://github.com/ytksato/git-tutorial.git (push)
